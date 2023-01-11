@@ -1,0 +1,76 @@
+name: mobsf
+base: core22
+adopt-info: mobsf
+summary: Mobile Security Framework (MobSF)
+description: |
+  Mobile Security Framework (MobSF) is an automated, all-in-one mobile application (Android/iOS/Windows) pen-testing, malware analysis and security assessment framework capable of performing static and dynamic analysis. MobSF supports mobile app binaries (APK, XAPK, IPA & APPX) along with zipped source code and provides REST APIs for seamless integration with your CI/CD or DevSecOps pipeline.The Dynamic Analyzer helps you to perform runtime security assessment and interactive instrumented testing.
+
+  Usage:- https://github.com/JitPatro/Mobile-Security-Framework-MobSF-Snap
+
+  Official Docs:- https://mobsf.github.io/docs
+
+
+grade: stable
+confinement: strict
+
+
+environment:
+  JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}"
+  JAVA_FONTS: "$SNAP/usr/share/fonts/truetype"
+  QT_QPA_PLATFORM_PLUGIN_PATH: "$SNAP/usr/lib/x86_64-linux-gnu/qt5/plugins/"
+  PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH:$JAVA_HOME/bin"
+  LC_ALL: C.UTF-8
+  LANG: C.UTF-8
+
+
+apps:
+  mobsf:
+    command: bin/mobsf
+    plugs: [desktop, home, network, network-bind]
+
+
+parts:
+  mobsf:
+    plugin: python
+    source: https://github.com/MobSF/Mobile-Security-Framework-MobSF.git
+
+    build-packages:
+      - build-essential
+      - openjdk-11-jdk
+      - python3-dev
+      - python3-pip
+      - python3-venv
+      - libffi-dev
+      - libssl-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - libjpeg-dev
+      - zlib1g-dev
+      - wkhtmltopdf
+      - rustc
+      - cargo
+
+    stage-packages:
+      - adb
+      - default-jre
+      - wkhtmltopdf
+
+    override-build: |
+      python3 -m venv $CRAFT_PART_INSTALL
+      source $CRAFT_PART_INSTALL/bin/activate
+      pip install --no-cache-dir --upgrade pip setuptools wheel
+      pip install --no-cache-dir --use-deprecated=legacy-resolver -U .
+      cp ./manage.py $CRAFT_PART_INSTALL/lib/python3.10/site-packages/
+      mobsfdb
+      find $CRAFT_PART_INSTALL/ -name "*.pyc" -exec rm -rf {} +
+      find $CRAFT_PART_INSTALL/ | grep -E "(__pycache__|\.pyo$)" | xargs rm -rf
+      sed -i 's|!/root/parts/mobsf/install/bin/python3|!/usr/bin/env python3|g' $CRAFT_PART_INSTALL/bin/*
+      sed -i "s|ADB_BINARY = ''|ADB_BINARY = '/snap/mobsf/current/usr/bin/adb'|g" $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/settings.py
+      rm -rf $CRAFT_PART_INSTALL/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
+      craftctl set version=$(git describe --tags)
+
+    organize:
+      usr/lib/*-linux-gnu/android/*: usr/lib/
+      usr/lib/*-linux-gnu/dri/*: usr/lib/
+      usr/lib/*-linux-gnu/gstreamer-1.0/*: usr/lib/
+      usr/lib/*-linux-gnu/nss/*: usr/lib/
