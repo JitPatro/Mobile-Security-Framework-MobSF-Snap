@@ -14,10 +14,16 @@ grade: stable
 confinement: strict
 
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+
+
 environment:
   JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}"
   JAVA_FONTS: "$SNAP/usr/share/fonts/truetype"
-  QT_QPA_PLATFORM_PLUGIN_PATH: "$SNAP/usr/lib/*-linux-gnu/qt5/plugins/"
+  QT_QPA_PLATFORM_PLUGIN_PATH: "$SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/"
   PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH:$JAVA_HOME/bin"
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
