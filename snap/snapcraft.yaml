@@ -74,6 +74,11 @@ parts:
       sed -i "s|ADB_BINARY = ''|ADB_BINARY = '/snap/mobsf/current/usr/bin/adb'|g" $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/settings.py
       rm -rf $CRAFT_PART_INSTALL/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
       craftctl set version=$(git describe --tags)
+      
+    override-stage: |
+      craftctl stage
+      cd $CRAFT_STAGE/usr/lib/jvm/java-11-openjdk-amd64/lib/security/
+      ln -sf ../../../../../../etc/java-11-openjdk/security/blacklisted.certs ./blacklisted.certs
 
     organize:
       usr/lib/*-linux-gnu/android/*: usr/lib/
