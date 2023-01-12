@@ -73,7 +73,7 @@ parts:
       sed -i "s|ADB_BINARY = ''|ADB_BINARY = '/snap/mobsf/current/usr/bin/adb'|g" $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/utils.py
       cd $CRAFT_PART_INSTALL/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
-      craftctl set version=$(git describe --tags)
+      cd -; craftctl set version=$(git describe --tags)
 
     override-stage: |
       craftctl default
