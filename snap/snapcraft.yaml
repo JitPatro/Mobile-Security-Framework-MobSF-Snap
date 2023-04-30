@@ -54,7 +54,7 @@ parts:
 
     stage-packages:
       - adb
-      - default-jre
+      - openjdk-11-jre-headless
       - wkhtmltopdf
 
     override-build: |
