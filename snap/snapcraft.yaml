@@ -68,7 +68,7 @@ parts:
       find $CRAFT_PART_INSTALL/ | grep -E "(__pycache__|\.pyo$)" | xargs rm -rf
       rm -rf $CRAFT_PART_INSTALL/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
       sed -i 's|!/.*\?/mobsf/install/bin/python3|!/usr/bin/env python3|g' $CRAFT_PART_INSTALL/bin/*
-      sed -i "s|ADB_BINARY = ''|ADB_BINARY = '/snap/mobsf/current/usr/bin/adb'|g" $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/settings.py
+      sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' $CRAFT_PART_INSTALL/lib/python3.10/site-packages/mobsf/MobSF/utils.py
       cd $CRAFT_PART_INSTALL/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -; craftctl set version=$(git describe --tags)
