@@ -29,7 +29,7 @@ environment:
 
 apps:
   mobsf:
-    command: run.sh
+    command: bin/run
     plugs: [desktop, home, network, network-bind]
 
 
@@ -76,6 +76,8 @@ parts:
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./pyproject.toml ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
+      echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/bin/run
+      echo 'cd $SNAP && ./run.sh "$@"' >> $CRAFT_PART_INSTALL/bin/run
       cd $CRAFT_PART_INSTALL/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -; craftctl set version=$(git describe --tags)
 
