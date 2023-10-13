@@ -78,6 +78,7 @@ parts:
       mv ./run.sh ./poetry.toml ./pyproject.toml ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
       echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/bin/run
       echo 'cd $SNAP && ./run.sh "$@"' >> $CRAFT_PART_INSTALL/bin/run
+      chmod +x $CRAFT_PART_INSTALL/bin/run
       cd $CRAFT_PART_INSTALL/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -; craftctl set version=$(git describe --tags)
 
