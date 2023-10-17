@@ -29,7 +29,7 @@ environment:
 
 apps:
   mobsf:
-    command: bin/run
+    command: venv/bin/run
     plugs: [desktop, home, network, network-bind]
 
 
