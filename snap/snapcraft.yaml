@@ -58,8 +58,8 @@ parts:
       - wkhtmltopdf
 
     override-build: |
-      python3 -m venv $CRAFT_PART_INSTALL
-      source $CRAFT_PART_INSTALL/bin/activate
+      python3 -m venv $CRAFT_PART_INSTALL/venv
+      source $CRAFT_PART_INSTALL/venv/bin/activate
       pip install --no-cache-dir --upgrade pip wheel
       pip install --no-cache-dir poetry==1.6.1
       pip install --no-cache-dir poetry==1.6.1 --root $CRAFT_PART_INSTALL
@@ -71,15 +71,15 @@ parts:
       poetry run python3 manage.py migrate
       find $CRAFT_PART_INSTALL/ -name "*.pyc" -exec rm -rf {} +
       find $CRAFT_PART_INSTALL/ | grep -E "(__pycache__|\.pyo$)" | xargs rm -rf
-      rm -rf $CRAFT_PART_INSTALL/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
-      sed -i 's|!/.*\?/mobsf/install/bin/python|!/usr/bin/env python|g' $CRAFT_PART_INSTALL/bin/*
+      rm -rf $CRAFT_PART_INSTALL/venv/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
+      sed -i 's|!/.*\?/mobsf/install/bin/python|!/usr/bin/env python|g' $CRAFT_PART_INSTALL/venv/bin/*
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./pyproject.toml ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
-      echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/bin/run
-      echo 'cd $SNAP && ./run.sh "$@"' >> $CRAFT_PART_INSTALL/bin/run
-      chmod +x $CRAFT_PART_INSTALL/bin/run
-      cd $CRAFT_PART_INSTALL/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
+      echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/venv/bin/run
+      echo 'cd $SNAP && ./run.sh "$@"' >> $CRAFT_PART_INSTALL/venv/bin/run
+      chmod +x $CRAFT_PART_INSTALL/venv/bin/run
+      cd $CRAFT_PART_INSTALL/venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -; craftctl set version=$(git describe --tags)
 
     override-stage: |
