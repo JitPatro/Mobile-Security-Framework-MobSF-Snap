@@ -22,14 +22,16 @@ environment:
   JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}"
   JAVA_FONTS: "$SNAP/usr/share/fonts/truetype"
   QT_QPA_PLATFORM_PLUGIN_PATH: "$SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/"
-  PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$SNAP/venv/bin:$PATH:$JAVA_HOME/bin"
+  PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$SNAP/.venv/bin:$PATH:$JAVA_HOME/bin"
+  POETRY_VIRTUALENVS_PATH: $SNAP/venv
+  POETRY_VIRTUALENVS_CREATE: false
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
 
 
 apps:
   mobsf:
-    command: usr/bin/snapcraft-preload $SNAP/run.sh
+    command: run.sh
     plugs: [desktop, home, network, network-bind]
 
 
@@ -67,13 +69,12 @@ parts:
       - wkhtmltopdf
 
     override-build: |
-      python3 -m venv $CRAFT_PART_INSTALL/venv
-      source $CRAFT_PART_INSTALL/venv/bin/activate
+      python3 -m venv $CRAFT_PART_INSTALL/.venv
+      source $CRAFT_PART_INSTALL/.venv/bin/activate
       pip install --no-cache-dir --upgrade pip wheel
       pip install --no-cache-dir poetry==1.6.1
       pip install --no-cache-dir poetry==1.6.1 --root $CRAFT_PART_INSTALL
       poetry config --local virtualenvs.create false 
-      poetry config --local virtualenvs.path '${SNAP}/venv'
       poetry install --no-root --only main --no-interaction --no-ansi
       chmod 644 ./poetry.toml
       poetry run python3 manage.py makemigrations
@@ -81,13 +82,13 @@ parts:
       poetry run python3 manage.py migrate
       find $CRAFT_PART_INSTALL/ -name "*.pyc" -exec rm -rf {} +
       find $CRAFT_PART_INSTALL/ | grep -E "(__pycache__|\.pyo$)" | xargs rm -rf
-      rm -rf $CRAFT_PART_INSTALL/venv/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
-      sed -i 's|!/.*\?/mobsf/install/venv/bin/python|!/usr/bin/env python|g' $CRAFT_PART_INSTALL/venv/bin/*
+      rm -rf $CRAFT_PART_INSTALL/.venv/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
+      sed -i 's|!/.*\?/mobsf/install/.venv/bin/python|!/usr/bin/env python|g' $CRAFT_PART_INSTALL/.venv/bin/*
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./manage.py ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
-      cd $CRAFT_PART_INSTALL/venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
-      cd -; craftctl set version=$(git describe --tags)
+      #cd $CRAFT_PART_INSTALL/.venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
+      craftctl set version=$(git describe --tags)
 
     override-stage: |
       craftctl default
