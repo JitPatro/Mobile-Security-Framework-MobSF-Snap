@@ -29,7 +29,7 @@ environment:
 
 apps:
   mobsf:
-    command: venv/bin/run
+    command: usr/bin/snapcraft-preload $SNAP/run.sh
     plugs: [desktop, home, network, network-bind]
 
 
@@ -43,6 +43,7 @@ parts:
         - g++-multilib
         
   mobsf:
+    after: [snapcraft-preload]
     plugin: python
     source: https://github.com/MobSF/Mobile-Security-Framework-MobSF.git
 
@@ -85,9 +86,6 @@ parts:
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./manage.py ./pyproject.toml ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
-      echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/venv/bin/run
-      echo 'cd $SNAP && ./run.sh "$@"' >> $CRAFT_PART_INSTALL/venv/bin/run
-      chmod +x $CRAFT_PART_INSTALL/venv/bin/run
       cd $CRAFT_PART_INSTALL/venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -; craftctl set version=$(git describe --tags)
 
