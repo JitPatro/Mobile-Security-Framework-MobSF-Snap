@@ -85,7 +85,7 @@ parts:
       sed -i 's|!/.*\?/mobsf/install/venv/bin/python|!/usr/bin/env python|g' $CRAFT_PART_INSTALL/venv/bin/*
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
-      mv ./run.sh ./poetry.toml ./manage.py ./pyproject.toml ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
+      mv ./run.sh ./poetry.toml ./manage.py ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
       cd $CRAFT_PART_INSTALL/venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -; craftctl set version=$(git describe --tags)
 
@@ -97,7 +97,7 @@ parts:
     override-prime: |
       snapcraftctl prime
       mv usr/local/bin/snapcraft-preload usr/bin/
-      mv usr/local/lib/lib* usr/lib/
+      mv usr/local/lib/lib* lib/
       rm -rf usr/local
       
     organize:
