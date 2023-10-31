@@ -98,7 +98,7 @@ parts:
       snapcraftctl prime
       mv usr/local/bin/snapcraft-preload usr/bin/
       mv usr/local/lib/lib* usr/lib/
-      rm -rf /usr/local
+      rm -rf usr/local
       
     organize:
       usr/lib/*-linux-gnu/android/*: usr/lib/
