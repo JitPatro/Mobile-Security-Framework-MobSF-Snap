@@ -93,11 +93,15 @@ parts:
       craftctl default
       cd $CRAFT_STAGE/usr/lib/jvm/java-11-openjdk-amd64/lib/security/
       ln -sf ../../../../../../etc/java-11-openjdk/security/blacklisted.certs ./blacklisted.certs
+
+    override-prime: |
+      snapcraftctl prime
+      mv usr/local/bin/snapcraft-preload usr/bin/
+      mv usr/local/lib/lib* usr/lib/
+      rm -rf /usr/local
       
     organize:
       usr/lib/*-linux-gnu/android/*: usr/lib/
       usr/lib/*-linux-gnu/dri/*: usr/lib/
       usr/lib/*-linux-gnu/gstreamer-1.0/*: usr/lib/
       usr/lib/*-linux-gnu/nss/*: usr/lib/
-      usr/local/bin/*: usr/bin
-      usr/local/lib/lib*: usr/lib
