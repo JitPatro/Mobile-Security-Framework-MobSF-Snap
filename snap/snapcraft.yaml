@@ -23,7 +23,7 @@ environment:
   JAVA_FONTS: "$SNAP/usr/share/fonts/truetype"
   QT_QPA_PLATFORM_PLUGIN_PATH: "$SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/"
   PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$SNAP/.venv/bin:$PATH:$JAVA_HOME/bin"
-  POETRY_VIRTUALENVS_PATH: $SNAP/venv
+  POETRY_VIRTUALENVS_PATH: $SNAP/.venv
   POETRY_VIRTUALENVS_CREATE: false
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
