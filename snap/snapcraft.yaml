@@ -87,7 +87,7 @@ parts:
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./manage.py ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
-      cp -r ./.venv $CRAFT_PRIME/
+      cp -r $CRAFT_PART_INSTALL/.venv $CRAFT_PRIME/
       #cd $CRAFT_PART_INSTALL/.venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       craftctl set version=$(git describe --tags)
 
