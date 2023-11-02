@@ -87,10 +87,10 @@ parts:
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./pyproject.toml ./manage.py ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
-      cp -r $CRAFT_PART_INSTALL/.venv $CRAFT_PRIME/
       echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/.venv/bin/run
       echo 'cd $SNAP && usr/bin/snapcraft-preload ./run.sh "$@"' >> $CRAFT_PART_INSTALL/.venv/bin/run
       chmod +x $CRAFT_PART_INSTALL/.venv/bin/run
+      cp -r $CRAFT_PART_INSTALL/.venv $CRAFT_PRIME/
       cd $CRAFT_PART_INSTALL/.venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
       cd -;craftctl set version=$(git describe --tags)
 
