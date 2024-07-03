@@ -85,8 +85,8 @@ parts:
       poetry run python3 manage.py makemigrations
       poetry run python3 manage.py makemigrations StaticAnalyzer
       poetry run python3 manage.py migrate
-      poetry run python manage.py createsuperuser --noinput --email ""
-      poetry run python manage.py create_roles
+      poetry run python3 manage.py createsuperuser --noinput --email ""
+      poetry run python3 manage.py create_roles
       find $CRAFT_PART_INSTALL/ -name "*.pyc" -exec rm -rf {} +
       find $CRAFT_PART_INSTALL/ | grep -E "(__pycache__|\.pyo$)" | xargs rm -rf
       rm -rf $CRAFT_PART_INSTALL/.venv/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
