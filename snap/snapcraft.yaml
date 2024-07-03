@@ -25,6 +25,9 @@ environment:
   PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$SNAP/.venv/bin:$PATH:$JAVA_HOME/bin"
   POETRY_VIRTUALENVS_PATH: $SNAP/.venv
   POETRY_VIRTUALENVS_CREATE: false
+  DJANGO_SUPERUSER_USERNAME: mobsf
+  DJANGO_SUPERUSER_PASSWORD: mobsf
+  
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
 
@@ -77,9 +80,13 @@ parts:
       poetry config --local virtualenvs.create false 
       poetry install --no-root --only main --no-interaction --no-ansi
       chmod 644 ./poetry.toml
+      export DJANGO_SUPERUSER_USERNAME=mobsf
+      export DJANGO_SUPERUSER_PASSWORD=mobsf
       poetry run python3 manage.py makemigrations
       poetry run python3 manage.py makemigrations StaticAnalyzer
       poetry run python3 manage.py migrate
+      poetry run python manage.py createsuperuser --noinput --email ""
+      poetry run python manage.py create_roles
       find $CRAFT_PART_INSTALL/ -name "*.pyc" -exec rm -rf {} +
       find $CRAFT_PART_INSTALL/ | grep -E "(__pycache__|\.pyo$)" | xargs rm -rf
       rm -rf $CRAFT_PART_INSTALL/.venv/lib/python3.10/site-packages/{pip*,setuptools*,wheel*}
