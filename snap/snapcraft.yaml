@@ -65,6 +65,7 @@ parts:
       - libjpeg-dev
       - zlib1g-dev
       - wkhtmltopdf
+      - unzip
       - wget
 
     stage-packages:
