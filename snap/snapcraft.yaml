@@ -65,6 +65,7 @@ parts:
       - libjpeg-dev
       - zlib1g-dev
       - wkhtmltopdf
+      - wget
 
     stage-packages:
       - adb
@@ -94,8 +95,13 @@ parts:
       sed -i "s|('MOBSF_ADB_BINARY', '')|('MOBSF_ADB_BINARY', '/snap/mobsf/current/usr/bin/adb')|g" ./mobsf/MobSF/settings.py
       sed -i 's|%s from master branch.|%s with "snap refresh mobsf"|g' ./mobsf/MobSF/utils.py
       mv ./run.sh ./poetry.toml ./pyproject.toml ./manage.py ./mobsf ./LICENSE ./LICENSES $CRAFT_PART_INSTALL
-      echo -e '#!/usr/bin/env bash\n\n' > $CRAFT_PART_INSTALL/.venv/bin/run
+      echo -e '#!/usr/bin/env bash\n\nif [[ -f $SNAP_HOME/.mobsf.conf ]]; then . $SNAP_HOME/.mobsf.conf; fi\n' > $CRAFT_PART_INSTALL/.venv/bin/run
+      echo -e 'if [[ -z $test ]]; then python3 $SNAP/manage.py makemigrations StaticAnalyzer\npython3 $SNAP/manage.py migrate\npython3 $SNAP/manage.py createsuperuser --noinput --email ""\npython3 $SNAP/manage.py create_roles; echo "test=1" > $SNAP_HOME/.mobsf.conf; fi' >> $CRAFT_PART_INSTALL/.venv/bin/run
       echo 'cd $SNAP && usr/bin/snapcraft-preload ./run.sh "$@"' >> $CRAFT_PART_INSTALL/.venv/bin/run
+      chmod +x $CRAFT_PART_INSTALL/.venv/bin/run
+      wget https://dl.google.com/android/maven2/com/android/tools/build/aapt2/8.10.0-beta01-12782657/aapt2-8.10.0-beta01-12782657-linux.jar
+      unzip aapt2-8.10.0-beta01-12782657-linux.jar -d $CRAFT_PART_INSTALL/usr/bin
+      cp $CRAFT_PART_INSTALL/usr/bin/aapt2 $CRAFT_PART_INSTALL/usr/bin/aapt 
       chmod +x $CRAFT_PART_INSTALL/.venv/bin/run
       cp -r $CRAFT_PART_INSTALL/.venv $CRAFT_PRIME/
       cd $CRAFT_PART_INSTALL/.venv/bin; for file in {python,python3,python3.10}; do ln -sf /usr/bin/python3.10 $file; done
