@@ -35,7 +35,7 @@ environment:
 
 apps:
   mobsf:
-    command: .venv/bin/run
+    command: usr/bin/snapcraft-preload .venv/bin/run
     plugs: [desktop, home, network, network-bind]
 
 
@@ -43,6 +43,8 @@ parts:
   snapcraft-preload:
     source: https://github.com/sergiusens/snapcraft-preload.git
     plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/
     build-packages:
       - on amd64:
         - gcc-multilib
