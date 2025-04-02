@@ -1,5 +1,5 @@
 name: mobsf
-base: core22
+base: core24
 adopt-info: mobsf
 summary: Mobile Security Framework (MobSF)
 description: |
@@ -14,12 +14,13 @@ grade: stable
 confinement: strict
 
 
-architectures:
-  - build-on: amd64
+platforms:
+  amd64:
+    build-on: [amd64]
 
 
 environment:
-  JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}"
+  JAVA_HOME: "$SNAP/usr/lib/jvm/java-17-openjdk-${SNAP_ARCH}"
   JAVA_FONTS: "$SNAP/usr/share/fonts/truetype"
   QT_QPA_PLATFORM_PLUGIN_PATH: "$SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/"
   PATH: "$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$SNAP/.venv/bin:$PATH:$JAVA_HOME/bin"
@@ -54,7 +55,7 @@ parts:
 
     build-packages:
       - build-essential
-      - openjdk-11-jdk
+      - openjdk-17-jdk
       - python3-dev
       - python3-pip
       - python3-venv
@@ -70,7 +71,7 @@ parts:
 
     stage-packages:
       - adb
-      - openjdk-11-jre-headless
+      - openjdk-17-jre-headless
       - wkhtmltopdf
 
     override-build: |
