@@ -35,7 +35,7 @@ environment:
 
 apps:
   mobsf:
-    command: usr/bin/snapcraft-preload .venv/bin/run
+    command: .venv/bin/run
     plugs: [desktop, home, network, network-bind]
 
 
